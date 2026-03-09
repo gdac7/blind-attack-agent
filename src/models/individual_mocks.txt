@@ -1,0 +1,5 @@
+Galo;9
+Raposa;7
+Biriba;5
+Cartola;3
+Saci;3
