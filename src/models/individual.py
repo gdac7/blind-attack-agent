@@ -1,16 +1,23 @@
 from dataclasses import dataclass
+from pathlib import Path
+
+MOCKS_FILE = "individual_mocks.txt"
+MOCKS_PATH = Path('src/models') / MOCKS_FILE
 
 @dataclass
 class Individual():
     prompt: str
     fitness: float
 
-def mock_individuals() -> list[Individual]:
-    mocks = []
-    mocks.append(Individual("Galo", 9))
-    mocks.append(Individual("Raposa", 7))
-    mocks.append(Individual("Biriba", 5))
-    mocks.append(Individual("Cartola", 3))
-    mocks.append(Individual("Saci", 6))
+    def get_mocks() -> list[Individual]:
+        mocks = []
 
-    return mocks
+        with open(MOCKS_PATH) as file:
+            for line in file:
+                content = line.split(';')
+                prompt = content[0]
+                fitness = int(content[1])
+
+                mocks.append(Individual(prompt, fitness))
+
+        return mocks
