@@ -7,7 +7,7 @@ class TournamentSelection(Selection):
     def __init__(self, tournament_size: int = 3):
         self.tournament_size = tournament_size
     
-    def select(self, offsprings: list[Individual], pop_size: int, num_selected: int) -> list[Individual]:
+    def select(self, offsprings: list[Individual], pop_size: int, num_selected: int = 1) -> list[Individual]:
         selected = []
 
         for _ in range(num_selected):
