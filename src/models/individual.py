@@ -9,15 +9,15 @@ class Individual():
     prompt: str
     fitness: float
 
-    def get_mocks() -> list[Individual]:
-        mocks = []
+def get_sample_individuals() -> list[Individual]:
+    mocks = []
 
-        with open(MOCKS_PATH) as file:
-            for line in file:
-                content = line.split(';')
-                prompt = content[0]
-                fitness = int(content[1])
+    with open(MOCKS_PATH) as file:
+        for line in file:
+            content = line.split(';')
+            prompt = content[0]
+            fitness = int(content[1])
 
-                mocks.append(Individual(prompt, fitness))
+            mocks.append(Individual(prompt, fitness))
 
-        return mocks
+    return mocks
