@@ -4,6 +4,6 @@ from abc import ABC, abstractmethod
 
 class FitnessFunction(ABC):
     @abstractmethod
-    def evaluate(self, individual: Individual) -> float:
+    def evaluate(self, prompt: str) -> float:
         pass
     
