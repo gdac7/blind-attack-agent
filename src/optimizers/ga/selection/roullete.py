@@ -1,5 +1,5 @@
-from src.selection.base import Selection
-from src.models.individual import Individual
+from src.optimizers.ga.selection.base import Selection
+from src.optimizers.models.individual import Individual
 
 import numpy as np
 

@@ -1,8 +1,8 @@
-from src.selection.base import Selection
-from src.selection.roullete import RoulleteSelection
-from src.fitness.cross_entropy import CrossEntropyFitness
-from src.models.individual import Individual
-from src.models.individual import get_sample_individuals
+from src.optimizers.ga.selection.base import Selection
+from src.optimizers.ga.selection.roullete import RoulleteSelection
+from src.optimizers.fitness.cross_entropy import CrossEntropyFitness
+from src.optimizers.models.individual import Individual
+from src.optimizers.models.individual import get_sample_individuals
 
 import torch
 from unittest.mock import MagicMock

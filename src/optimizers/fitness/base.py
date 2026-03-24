@@ -1,4 +1,4 @@
-from src.models.individual import Individual
+from src.optimizers.models.individual import Individual
 
 from abc import ABC, abstractmethod
 

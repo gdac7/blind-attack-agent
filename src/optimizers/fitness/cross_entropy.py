@@ -1,5 +1,5 @@
-from src.fitness.base import FitnessFunction
-from src.models.individual import Individual
+from src.optimizers.fitness.base import FitnessFunction
+from src.optimizers.models.individual import Individual
 
 import torch
 import torch.nn.functional as F
