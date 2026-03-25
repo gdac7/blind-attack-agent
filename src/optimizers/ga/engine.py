@@ -3,6 +3,7 @@ from src.optimizers.ga.selection.base import Selection
 from src.optimizers.models.individual import Individual
 
 import time
+from loguru import logger
 
 class GAEngine:
     def __init__(
@@ -32,7 +33,7 @@ class GAEngine:
         best_individual = selected_individuals[0]
 
         total_time = time.time() - start_time
-        print(f'GA Total Time: {total_time:.2f}')
+        logger.info(f'GA Total Time: {total_time:.2f}')
 
         return best_individual
     
