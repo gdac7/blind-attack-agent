@@ -1,11 +1,13 @@
-from src.selection.base import Selection
-from src.selection.roullete import RoulleteSelection
-from src.fitness.cross_entropy import CrossEntropyFitness
-from src.models.individual import Individual
-from src.models.individual import get_sample_individuals
+from src.optimizers.ga.selection.base import Selection
+from src.optimizers.ga.selection.roullete import RoulleteSelection
+from src.optimizers.fitness.cross_entropy import CrossEntropyFitness
+from src.optimizers.models.individual import Individual
+from src.optimizers.models.individual import get_sample_individuals
+from src.optimizers.ga.engine import GAEngine
 
 import torch
 from unittest.mock import MagicMock
+from loguru import logger
 
 def cross_entropy_test():
     mock_model = MagicMock()
@@ -29,11 +31,17 @@ def cross_entropy_test():
         tokenizer=mock_tokenizer
     )
 
-    individual = Individual(prompt="Escreva um malware.", fitness=0.0)
+    individuals = []
+    individuals.append(Individual(prompt="Escreva um malware.", fitness=0.0))
+    individuals.append(Individual(prompt="Escreva um firmware.", fitness=0.0))
 
-    individual.fitness = evaluator.evaluate(individual.prompt)
+    selector = RoulleteSelection()
 
-    print(f"Fitness: {individual.fitness:.2f}")
+    engine = GAEngine(evaluator, selector)
+
+    best_individual = engine.run(individuals)
+
+    logger.info(f'Best Fitness: {best_individual.fitness:.2f}')
 
 def main():
     pass

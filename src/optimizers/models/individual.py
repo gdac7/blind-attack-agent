@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 MOCKS_FILE = "individual_mocks.txt"
-MOCKS_PATH = Path('src/models') / MOCKS_FILE
+MOCKS_PATH = Path.cwd() / MOCKS_FILE
 
 @dataclass
 class Individual():
