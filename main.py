@@ -7,6 +7,7 @@ from src.optimizers.ga.engine import GAEngine
 
 import torch
 from unittest.mock import MagicMock
+from loguru import logger
 
 def cross_entropy_test():
     mock_model = MagicMock()
@@ -40,7 +41,7 @@ def cross_entropy_test():
 
     best_individual = engine.run(individuals)
 
-    print(f"Fitness: {best_individual.fitness:.2f}")
+    logger.info(f'Best Fitness: {best_individual.fitness:.2f}')
 
 def main():
     pass
