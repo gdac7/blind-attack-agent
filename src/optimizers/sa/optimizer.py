@@ -42,7 +42,7 @@ class SAOptimizer(Optimizer):
             neighbor = self._generate_neighbor(curr_solution)
             neighbor_fitness = neighbor.fitness
 
-            if neighbor_fitness < curr_fitness:
+            if neighbor_fitness > curr_fitness:
                 curr_solution = neighbor
                 curr_fitness = neighbor_fitness
             else:
@@ -56,3 +56,16 @@ class SAOptimizer(Optimizer):
             temp = temp * self.cooling_rate
 
         return curr_solution
+    
+    def _run(self, initial_population: list[Individual]) -> Individual:
+        best_solution = initial_population[0]
+        best_fitness = initial_population[0].fitness
+
+        for individual in initial_population:
+            solution = self._anneal_individual(individual)
+
+            if solution.fitness > best_fitness:
+                best_solution = solution
+                best_fitness = solution.fitness
+        
+        return best_solution
