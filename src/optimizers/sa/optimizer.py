@@ -15,3 +15,9 @@ class SAOptimizer(Optimizer):
     
     def _metropolis(self, temperature: float, delta_e: float) -> float:
         return math.exp(-(delta_e) / temperature)
+    
+    def _generate_neighbor(self, current_solution: Individual) -> Individual:
+        neighbor_prompt = current_solution.prompt + '!'
+        neighbor = Individual(neighbor_prompt)
+
+        return neighbor
