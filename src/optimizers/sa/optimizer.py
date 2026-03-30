@@ -36,7 +36,7 @@ class SAOptimizer(Optimizer):
         temp = self._calibrate_temperature(initial_solution)
 
         curr_solution = initial_solution
-        curr_fitness = self.evaluator.evaluate(initial_solution)
+        curr_fitness = self.evaluator.evaluate(initial_solution.prompt)
 
         for i in range(self.max_iterations):
             neighbor = self._generate_neighbor(curr_solution)
