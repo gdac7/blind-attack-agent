@@ -8,7 +8,7 @@ import random
 class SAOptimizer(Optimizer):
     DEFAULT_INITIAL_TEMP = 100
     DEFAULT_COOLING_RATE = 0.99
-    DEFAULT_MAX_ITER     = 20
+    DEFAULT_MAX_ITER = 20
 
     def __init__(
         self,
