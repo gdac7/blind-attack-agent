@@ -40,13 +40,13 @@ class SAOptimizer(Optimizer):
 
         for i in range(self.max_iterations):
             neighbor = self._generate_neighbor(curr_solution)
-            neighbor_fitness = neighbor.fitness
+            neighbor_fitness = self.evaluator.evaluate(neighbor.prompt)
 
             if neighbor_fitness > curr_fitness:
                 curr_solution = neighbor
                 curr_fitness = neighbor_fitness
             else:
-                delta_e = neighbor_fitness - curr_fitness
+                delta_e = curr_fitness - neighbor_fitness
                 metropolis_prob = self._metropolis(temp, delta_e)
 
                 if random.random() < metropolis_prob:
