@@ -4,11 +4,15 @@ from src.optimizers.models.individual import Individual
 
 import math
 import random
+from loguru import logger
 
 class SAOptimizer(Optimizer):
     DEFAULT_INITIAL_TEMP = 100
     DEFAULT_COOLING_RATE = 0.99
     DEFAULT_MAX_ITER = 20
+
+    INITIAL_ACCEPTANCE_RATE = 0.85
+    TEMP_CALIBRATION_SAMPLES = 100
 
     def __init__(
         self,
@@ -24,6 +28,31 @@ class SAOptimizer(Optimizer):
         return math.exp(-(delta_e) / temperature)
     
     def _calibrate_temperature(self, initial_solution: Individual) -> float:
+        delta_sum = 0
+        loss_count = 0
+
+        curr_solution = initial_solution
+        curr_fitness = self.evaluator.evaluate(initial_solution.prompt)
+
+        for _ in range(self.TEMP_CALIBRATION_SAMPLES):
+            neighbor = self._generate_neighbor(curr_solution)
+            neighbor_fitness = self.evaluator.evaluate(neighbor.prompt)
+
+            if neighbor_fitness < curr_fitness:
+                delta_e = curr_fitness - neighbor_fitness
+
+                delta_sum += delta_e
+                loss_count += 1
+
+                curr_solution = neighbor
+                curr_fitness = neighbor_fitness
+        
+        if loss_count != 0:
+            delta_mean = delta_sum / loss_count
+            initial_temp = -(delta_mean) / math.log(self.INITIAL_ACCEPTANCE_RATE)
+
+            return initial_temp
+        
         return self.DEFAULT_INITIAL_TEMP
     
     def _generate_neighbor(self, current_solution: Individual) -> Individual:
@@ -34,6 +63,8 @@ class SAOptimizer(Optimizer):
     
     def _anneal_individual(self, initial_solution: Individual) -> Individual:
         temp = self._calibrate_temperature(initial_solution)
+
+        logger.info(f'Initial Temperature: {temp:.2f}')
 
         curr_solution = initial_solution
         curr_fitness = self.evaluator.evaluate(initial_solution.prompt)
