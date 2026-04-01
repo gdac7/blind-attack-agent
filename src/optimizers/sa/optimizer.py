@@ -55,6 +55,8 @@ class SAOptimizer(Optimizer):
             
             temp = temp * self.cooling_rate
 
+        curr_solution.fitness = self.evaluator.evaluate(curr_solution.prompt)
+
         return curr_solution
     
     def _run(self, initial_population: list[Individual]) -> Individual:
