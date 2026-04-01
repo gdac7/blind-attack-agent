@@ -7,7 +7,7 @@ MOCKS_PATH = Path.cwd() / MOCKS_FILE
 @dataclass
 class Individual():
     prompt: str
-    fitness: float
+    fitness: float = 0.0
 
 def get_sample_individuals() -> list[Individual]:
     mocks = []
