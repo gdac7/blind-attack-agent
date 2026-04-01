@@ -4,6 +4,9 @@ from src.optimizers.models.individual import Individual
 
 import math
 import random
+
+import nltk
+from nltk.tokenize import word_tokenize
 from loguru import logger
 
 class SAOptimizer(Optimizer):
@@ -20,6 +23,8 @@ class SAOptimizer(Optimizer):
         cooling_rate: float = DEFAULT_COOLING_RATE,
         max_iterations: int = DEFAULT_MAX_ITER
     ):
+        nltk.download('punkt_tab', quiet=True)
+
         self.evaluator = evaluator
         self.cooling_rate = cooling_rate
         self.max_iterations = max_iterations
@@ -56,6 +61,8 @@ class SAOptimizer(Optimizer):
         return self.DEFAULT_INITIAL_TEMP
     
     def _generate_neighbor(self, current_solution: Individual) -> Individual:
+        solution_tokens = word_tokenize(current_solution.prompt)
+
         neighbor_prompt = current_solution.prompt + '!'
         neighbor = Individual(neighbor_prompt)
 
