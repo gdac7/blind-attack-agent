@@ -27,9 +27,6 @@ class SAOptimizer(Optimizer):
         cooling_rate: float = DEFAULT_COOLING_RATE,
         max_iterations: int = DEFAULT_MAX_ITER
     ):
-        nltk.download('wordnet', quiet=True)
-        nltk.download('omw-1.4', quiet=True)
-
         self.nlp = spacy.load('en_core_web_sm')
 
         self.evaluator = evaluator
