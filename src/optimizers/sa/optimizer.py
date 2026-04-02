@@ -1,11 +1,16 @@
 from src.optimizers.base import Optimizer
 from src.optimizers.fitness.base import FitnessFunction
 from src.optimizers.models.individual import Individual
+from src.optimizers.utils.nlp_constants import TARGET_POS_TAGS
+from src.optimizers.utils.nlp_constants import POS_TRANSLATION
+from src.optimizers.utils.validate_synonym import validate_synonym
 
 import math
 import random
 
 import spacy
+import nltk
+from nltk.wsd import lesk
 from loguru import logger
 
 class SAOptimizer(Optimizer):
@@ -22,6 +27,9 @@ class SAOptimizer(Optimizer):
         cooling_rate: float = DEFAULT_COOLING_RATE,
         max_iterations: int = DEFAULT_MAX_ITER
     ):
+        nltk.download('wordnet', quiet=True)
+        nltk.download('omw-1.4', quiet=True)
+
         self.nlp = spacy.load('en_core_web_sm')
 
         self.evaluator = evaluator
@@ -61,6 +69,36 @@ class SAOptimizer(Optimizer):
     
     def _generate_neighbor(self, current_solution: Individual) -> Individual:
         doc = self.nlp(current_solution.prompt)
+
+        mutation_candidates = [token for token in doc if token.pos_ in TARGET_POS_TAGS]
+
+        if not mutation_candidates:
+            return current_solution
+
+        mutation_token = random.choice(mutation_candidates)
+        mutation_token_pos = POS_TRANSLATION.get(mutation_token.pos_)
+
+        synset = lesk([token.text for token in doc], mutation_token.lemma_, mutation_token_pos)
+
+        if synset is None:
+            return current_solution
+        
+        valid_synonyms: str = []
+        for lemma in synset.lemmas():
+            synonym = lemma.name()
+
+            if validate_synonym(mutation_token.text, synonym):
+                valid_synonyms.append(synonym)
+        
+        if not valid_synonyms: 
+            return current_solution
+        
+        chosen_synonym = random.choice(valid_synonyms)
+
+        if mutation_token.text[0].isupper():
+            chosen_synonym = chosen_synonym.capitalize()
+
+        mutaded_prompt = current_solution.prompt.replace(f'{mutation_token.text}', chosen_synonym)
 
         neighbor_prompt = current_solution.prompt + '!'
         neighbor = Individual(neighbor_prompt)
