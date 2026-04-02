@@ -4,7 +4,7 @@ import pytest
 
 class EvaluatorMock(FitnessFunction):
     def evaluate(self, prompt: str) -> float:
-        if prompt.endswith('!'):
+        if not prompt.endswith('!'):
             return 10.0
         return 5.0
     

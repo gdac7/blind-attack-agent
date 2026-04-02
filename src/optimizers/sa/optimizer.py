@@ -100,7 +100,7 @@ class SAOptimizer(Optimizer):
 
         mutaded_prompt = current_solution.prompt.replace(f'{mutation_token.text}', chosen_synonym)
 
-        neighbor_prompt = current_solution.prompt + '!'
+        neighbor_prompt = mutaded_prompt
         neighbor = Individual(neighbor_prompt)
 
         return neighbor
@@ -140,6 +140,8 @@ class SAOptimizer(Optimizer):
 
         for individual in initial_population:
             solution = self._anneal_individual(individual)
+
+            logger.info(f'Initial Prompt: {individual.prompt} | Best Solution: {solution.prompt}')
 
             if solution.fitness > best_fitness:
                 best_solution = solution

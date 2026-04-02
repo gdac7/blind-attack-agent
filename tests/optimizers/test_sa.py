@@ -15,4 +15,4 @@ def test_sa(mock_evaluator):
     best_solution = optimizer.optimize(initial_population)
 
     assert best_solution.fitness == 10
-    assert best_solution.prompt.endswith('!')
+    assert not best_solution.prompt.endswith('!')
