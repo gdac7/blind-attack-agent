@@ -4,9 +4,13 @@ import pytest
 
 class EvaluatorMock(FitnessFunction):
     def evaluate(self, prompt: str) -> float:
-        if not prompt.endswith('!'):
-            return 10.0
-        return 5.0
+        words = prompt.split()
+        
+        if not words:
+            return 0.0
+            
+        total_letters = sum(len(word) for word in words)
+        return float(total_letters / len(words))
     
 @pytest.fixture
 def mock_evaluator():

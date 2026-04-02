@@ -117,6 +117,8 @@ class SAOptimizer(Optimizer):
             neighbor = self._generate_neighbor(curr_solution)
             neighbor_fitness = self.evaluator.evaluate(neighbor.prompt)
 
+            logger.info(f'Neighbor: {neighbor.prompt} | Fitness: {neighbor_fitness}')
+
             if neighbor_fitness > curr_fitness:
                 curr_solution = neighbor
                 curr_fitness = neighbor_fitness
@@ -139,9 +141,11 @@ class SAOptimizer(Optimizer):
         best_fitness = initial_population[0].fitness
 
         for individual in initial_population:
+            logger.info(f'Initial Prompt: {individual.prompt} | Fitness: {individual.fitness}')
+
             solution = self._anneal_individual(individual)
 
-            logger.info(f'Initial Prompt: {individual.prompt} | Best Solution: {solution.prompt}')
+            logger.info(f'Solution: {solution.prompt} | Fitness: {solution.fitness}')
 
             if solution.fitness > best_fitness:
                 best_solution = solution
