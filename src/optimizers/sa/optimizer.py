@@ -67,13 +67,13 @@ class SAOptimizer(Optimizer):
         
         return self.DEFAULT_INITIAL_TEMP
     
-    def _generate_neighbor(self, current_solution: Individual) -> Individual:
-        doc = self.nlp(current_solution.prompt)
+    def _generate_neighbor(self, curr_solution: Individual) -> Individual:
+        doc = self.nlp(curr_solution.prompt)
 
         mutation_candidates = [token for token in doc if token.pos_ in TARGET_POS_TAGS]
 
         if not mutation_candidates:
-            return current_solution
+            return curr_solution
 
         mutation_token = random.choice(mutation_candidates)
         mutation_token_pos = POS_TRANSLATION.get(mutation_token.pos_)
@@ -81,7 +81,7 @@ class SAOptimizer(Optimizer):
         synset = lesk([token.text for token in doc], mutation_token.lemma_, mutation_token_pos)
 
         if synset is None:
-            return current_solution
+            return curr_solution
         
         valid_synonyms: str = []
         for lemma in synset.lemmas():
@@ -91,14 +91,14 @@ class SAOptimizer(Optimizer):
                 valid_synonyms.append(synonym)
         
         if not valid_synonyms: 
-            return current_solution
+            return curr_solution
         
         chosen_synonym = random.choice(valid_synonyms)
 
         if mutation_token.text[0].isupper():
             chosen_synonym = chosen_synonym.capitalize()
 
-        mutaded_prompt = current_solution.prompt.replace(f'{mutation_token.text}', chosen_synonym)
+        mutaded_prompt = curr_solution.prompt.replace(f'{mutation_token.text}', chosen_synonym)
 
         neighbor_prompt = mutaded_prompt
         neighbor = Individual(neighbor_prompt)
