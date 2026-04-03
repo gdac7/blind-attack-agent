@@ -28,7 +28,7 @@ class ActorTransformersModel(TransformersModel):
             generation_params["temperature"] = temperature
 
         with torch.inference_mode():
-            # if LM has a chat template
+            # if LLM has a chat template
             if getattr(self.tokenizer, "chat_template", None):
                 try:
                     messages = [
@@ -41,7 +41,7 @@ class ActorTransformersModel(TransformersModel):
                         add_generation_prompt=True
                     )
                 # it does have a chat template but without system_prompt
-                except:
+                except Exception as e:
                     messages = [{"role": "user", "content": f"{system_prompt}\n\n{user_prompt}" if system_prompt else user_prompt}]
                     plain_text = self.tokenizer.apply_chat_template(
                         messages,
