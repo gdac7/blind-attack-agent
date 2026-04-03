@@ -5,6 +5,16 @@ from typing import List, Dict
 import torch
 
 class TransformersModel(ABC):
+    @property
+    @abstractmethod
+    def tokenizer(self):
+        pass
+    
+    @property
+    @abstractmethod
+    def model(self):
+        pass
+
     def generate(self, prompt_template: PromptTemplate) -> str:
         generation_params = {
             "max_new_tokens": prompt_template.max_tokens,
