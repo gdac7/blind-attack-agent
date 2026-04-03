@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 from src.prompts.prompt_template import PromptTemplate
-from transformers import AutoTokenizer, AutoModelForCausalLM
-from typing import List, Dict
 import torch
 
 class TransformersModel(ABC):
@@ -9,7 +7,7 @@ class TransformersModel(ABC):
     @abstractmethod
     def tokenizer(self):
         pass
-    
+
     @property
     @abstractmethod
     def model(self):
