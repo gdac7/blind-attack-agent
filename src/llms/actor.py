@@ -19,7 +19,7 @@ class ActorTM(TransformersModel):
         )
         self.short_term_memory = ShortTermMemory() 
         self.long_term_memory = list[LongTermMemory]
-        self.function = "actor"
+        
     
     
 
