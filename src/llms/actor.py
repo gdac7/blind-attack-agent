@@ -2,6 +2,8 @@ from src.interfaces.transformers_interface import TransformersModel
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from typing import List, Dict
 import torch
+from src.memory.shot_term_memory import ShortTermMemory
+from src.memory.long_term_memory import LongTermMemory
 
 class ActorTM(TransformersModel):
     def __init__(self, model_name: str):
@@ -15,7 +17,12 @@ class ActorTM(TransformersModel):
             torch_dtype=torch.bfloat16,
             attn_implementation="sdpa"
         )
-        
+        self.short_term_memory = ShortTermMemory() 
+        self.long_term_memory = list[LongTermMemory]
+        self.function = "actor"
+    
+    
+
     @property
     def tokenizer(self):
         return self._tokenizer
