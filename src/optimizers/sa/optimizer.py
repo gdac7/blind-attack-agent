@@ -108,9 +108,8 @@ class SAOptimizer(Optimizer):
         logger.info(f'Initial Temperature: {temp:.2f}')
 
         curr_solution = initial_solution
-        self.evaluator.evaluate(curr_solution)
 
-        for i in range(self.max_iterations):
+        for _ in range(self.max_iterations):
             neighbor = self._generate_neighbor(curr_solution)
             self.evaluator.evaluate(neighbor)
 
@@ -130,6 +129,8 @@ class SAOptimizer(Optimizer):
         return curr_solution
     
     def _run(self, initial_population: list[Individual]) -> Individual:
+        self.evaluator.evaluate_population(initial_population)
+
         best_solution = initial_population[0]
 
         for individual in initial_population:
