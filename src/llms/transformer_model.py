@@ -61,7 +61,7 @@ class ActorTransformersModel(TransformersModel):
             # Get just the response from LM
             output_ids = self.model.generate(**inputs, **generation_params)
             generated_tokens = output_ids[0][input_length:]
-            lm_response = self.__wrapper_response(
+            lm_response = self._wrapper_response(
                 self.tokenize.decode(generated_tokens, skip_special_tokens=True).strip()
             )
             return lm_response
