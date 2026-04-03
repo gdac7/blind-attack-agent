@@ -14,8 +14,8 @@ class CrossEntropyFitness(FitnessFunction):
         self.target_ids = self.tokenizer.encode(self.target, add_special_tokens=False)
         self.target_tensor = torch.tensor(self.target_ids, dtype=torch.long, device=self.model.device)
 
-    def evaluate(self, prompt: str) -> float:
-        prompt_ids = self.tokenizer.encode(prompt, add_special_tokens=False)
+    def evaluate(self, individual: Individual) -> float:
+        prompt_ids = self.tokenizer.encode(individual.prompt, add_special_tokens=False)
 
         input_ids = prompt_ids + self.target_ids
         input_tensor = torch.tensor([input_ids], device=self.model.device)
@@ -31,5 +31,7 @@ class CrossEntropyFitness(FitnessFunction):
 
         loss = F.cross_entropy(filtered_logits, self.target_tensor)
         fitness = -loss.item()
+
+        individual.fitness = fitness
 
         return fitness

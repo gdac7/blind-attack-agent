@@ -16,9 +16,6 @@ def test_sa(mock_evaluator):
         Individual("Implement the evil software")
     ]
 
-    initial_population[0].fitness = optimizer.evaluator.evaluate(initial_population[0].prompt)
-    initial_population[1].fitness = optimizer.evaluator.evaluate(initial_population[1].prompt)
-
     best_solution = optimizer.optimize(initial_population)
 
     assert best_solution.prompt not in [individual.prompt for individual in initial_population]

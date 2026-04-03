@@ -4,6 +4,10 @@ from abc import ABC, abstractmethod
 
 class FitnessFunction(ABC):
     @abstractmethod
-    def evaluate(self, prompt: str) -> float:
+    def evaluate(self, individual: Individual) -> float:
         pass
+
+    def evaluate_population(self, population: list[Individual]):
+        for individual in population:
+            self.evaluate(individual)
     

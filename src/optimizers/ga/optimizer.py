@@ -13,16 +13,9 @@ class GAOptimizer(Optimizer):
         self.evaluator = evaluator
         self.selector = selector
         self.max_generations = max_generations
-
-    def _evaluate_population(self, population: list[Individual]) -> None:
-        for ind in population:
-            if ind.fitness == 0:
-                ind.fitness = self.evaluator.evaluate(ind.prompt)
-        
-        population.sort(key=lambda ind: ind.fitness, reverse=True)
     
     def _run(self, initial_population: list[Individual]) -> Individual:
-        self._evaluate_population(initial_population)
+        self.evaluator.evaluate_population(initial_population)
 
         selected_individuals = self.selector.select(initial_population, len(initial_population))
 
