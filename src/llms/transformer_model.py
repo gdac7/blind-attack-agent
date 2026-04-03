@@ -6,7 +6,7 @@ import torch
 class ActorTransformersModel(TransformersModel):
     def __init__(self, model_url: str, device: str = "auto"):
         self.model_name = model_url
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_url, padding_side="left")
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name, padding_side="left")
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
