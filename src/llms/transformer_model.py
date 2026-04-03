@@ -1,4 +1,4 @@
-from local_models_interface import LocalModel
+from interfaces.local_models_interface import LocalModel
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from typing import List, Dict
 import torch
