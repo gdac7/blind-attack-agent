@@ -27,6 +27,8 @@ class SAOptimizer(Optimizer):
         cooling_rate: float = DEFAULT_COOLING_RATE,
         max_iterations: int = DEFAULT_MAX_ITER
     ):
+        super().__init__('Simulated Annealing')
+
         self.nlp = spacy.load('en_core_web_sm')
 
         self.evaluator = evaluator
