@@ -1,9 +1,9 @@
-from interfaces.local_models_interface import LocalModel
+from interfaces.transformers_interface import TransformersModel
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from typing import List, Dict
 import torch
 
-class Actor(LocalModel):
+class ActorTransformersModel(TransformersModel):
     def __init__(self, model_url: str, device: str = "auto"):
         self.model_url = model_url
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_url, padding_side="left")

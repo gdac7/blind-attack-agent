@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class LocalModel(ABC):
+class TransformersModel(ABC):
     @abstractmethod
     def generate(self):
         pass
