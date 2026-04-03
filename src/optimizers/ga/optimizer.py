@@ -10,6 +10,8 @@ class GAOptimizer(Optimizer):
         selector: Selection,
         max_generations: int = 10
     ):
+        super().__init__('Genetic Algorithm')
+
         self.evaluator = evaluator
         self.selector = selector
         self.max_generations = max_generations
