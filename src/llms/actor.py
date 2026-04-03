@@ -4,6 +4,7 @@ from typing import List, Dict
 import torch
 from src.memory.shot_term_memory import ShortTermMemory
 from src.memory.long_term_memory import LongTermMemory
+from src.prompts.actor_prompt import ActorPrompt
 
 class ActorTM(TransformersModel):
     def __init__(self, model_name: str):
@@ -19,7 +20,7 @@ class ActorTM(TransformersModel):
         )
         self.short_term_memory = ShortTermMemory() 
         self.long_term_memory = list[LongTermMemory]
-        
+        self.prompt_manager = ActorPrompt
     
     
 

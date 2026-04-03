@@ -6,6 +6,7 @@ class ActorPrompt:
     system_prompt = ""
     user_prompt = ""
     temperature = 0.7
+    max_tokens = 1024
 
     @classmethod
     def get_jailbrek_prompt(cls, malicious_request: str):
@@ -48,5 +49,5 @@ class ActorPrompt:
             user_prompt=user_prompt,
             condition=condition,
             temperature=cls.temperature,
-            max_tokens=1024
+            max_tokens=cls.max_tokens
         )
