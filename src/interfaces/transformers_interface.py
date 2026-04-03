@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from 
+from prompts.prompt_template import PromptTemplate
 class TransformersModel(ABC):
     @abstractmethod
-    def generate(self, ):
+    def generate(self, prompt_template: PromptTemplate) -> str:
         pass
 
     def _wrapper_response(self, lm_response: str) -> str:

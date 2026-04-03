@@ -66,10 +66,5 @@ class ActorTransformersModel(TransformersModel):
             )
             return lm_response
         
-    def __wrapper_response(self, lm_response: str) -> str:
-        tag = "[END OF THE NEW PROMPT]"
-        if tag in lm_response:
-            return lm_response.split(tag)[0]
-        return lm_response
 
 
