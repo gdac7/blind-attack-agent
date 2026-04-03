@@ -17,7 +17,7 @@ class GAOptimizer(Optimizer):
     def _evaluate_population(self, population: list[Individual]) -> None:
         for ind in population:
             if ind.fitness == 0:
-                ind.fitness = self.evaluator.evaluate(ind.prompt)
+                self.evaluator.evaluate(ind)
         
         population.sort(key=lambda ind: ind.fitness, reverse=True)
     

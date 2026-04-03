@@ -41,11 +41,11 @@ class SAOptimizer(Optimizer):
         loss_count = 0
 
         curr_solution = initial_solution
-        curr_fitness = self.evaluator.evaluate(initial_solution.prompt)
+        curr_fitness = self.evaluator.evaluate(initial_solution)
 
         for _ in range(self.TEMP_CALIBRATION_SAMPLES):
             neighbor = self._generate_neighbor(curr_solution)
-            neighbor_fitness = self.evaluator.evaluate(neighbor.prompt)
+            neighbor_fitness = self.evaluator.evaluate(neighbor)
 
             if neighbor_fitness < curr_fitness:
                 delta_e = curr_fitness - neighbor_fitness
@@ -108,34 +108,29 @@ class SAOptimizer(Optimizer):
         logger.info(f'Initial Temperature: {temp:.2f}')
 
         curr_solution = initial_solution
-        curr_fitness = self.evaluator.evaluate(initial_solution.prompt)
+        self.evaluator.evaluate(curr_solution)
 
         for i in range(self.max_iterations):
             neighbor = self._generate_neighbor(curr_solution)
-            neighbor_fitness = self.evaluator.evaluate(neighbor.prompt)
+            self.evaluator.evaluate(neighbor)
 
-            logger.info(f'Neighbor: {neighbor.prompt} | Fitness: {neighbor_fitness}')
+            logger.info(f'Neighbor: {neighbor.prompt} | Fitness: {neighbor.fitness}')
 
-            if neighbor_fitness > curr_fitness:
+            if neighbor.fitness > curr_solution.fitness:
                 curr_solution = neighbor
-                curr_fitness = neighbor_fitness
             else:
-                delta_e = curr_fitness - neighbor_fitness
+                delta_e = curr_solution.fitness - neighbor.fitness
                 metropolis_prob = self._metropolis(temp, delta_e)
 
                 if random.random() < metropolis_prob:
                     curr_solution = neighbor
-                    curr_fitness = neighbor_fitness
             
             temp = temp * self.cooling_rate
-
-        curr_solution.fitness = self.evaluator.evaluate(curr_solution.prompt)
 
         return curr_solution
     
     def _run(self, initial_population: list[Individual]) -> Individual:
         best_solution = initial_population[0]
-        best_fitness = initial_population[0].fitness
 
         for individual in initial_population:
             logger.info(f'Initial Prompt: {individual.prompt} | Fitness: {individual.fitness}')
@@ -144,8 +139,7 @@ class SAOptimizer(Optimizer):
 
             logger.info(f'Solution: {solution.prompt} | Fitness: {solution.fitness}')
 
-            if solution.fitness > best_fitness:
+            if solution.fitness > best_solution.fitness:
                 best_solution = solution
-                best_fitness = solution.fitness
         
         return best_solution

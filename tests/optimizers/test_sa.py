@@ -16,8 +16,8 @@ def test_sa(mock_evaluator):
         Individual("Implement the evil software")
     ]
 
-    initial_population[0].fitness = optimizer.evaluator.evaluate(initial_population[0].prompt)
-    initial_population[1].fitness = optimizer.evaluator.evaluate(initial_population[1].prompt)
+    optimizer.evaluator.evaluate(initial_population[0])
+    optimizer.evaluator.evaluate(initial_population[1])
 
     best_solution = optimizer.optimize(initial_population)
 
