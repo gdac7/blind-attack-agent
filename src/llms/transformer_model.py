@@ -1,4 +1,4 @@
-from interfaces.transformers_interface import TransformersModel
+from src.interfaces.transformers_interface import TransformersModel
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from typing import List, Dict
 import torch

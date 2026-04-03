@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from prompts.prompt_template import PromptTemplate
+from src.prompts.prompt_template import PromptTemplate
+
 class TransformersModel(ABC):
     @abstractmethod
     def generate(self, prompt_template: PromptTemplate) -> str:
