@@ -18,7 +18,7 @@ class ActorTM(TransformersModel):
         self._model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             device_map="cuda",
-            torch_dtype=torch.bfloat16,
+            dtype=torch.bfloat16,
             attn_implementation="sdpa"
         )
         self.short_term_memory: ShortTermMemory = None
