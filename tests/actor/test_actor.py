@@ -4,6 +4,7 @@ from unittest.mock import patch
 from src.memory.shot_term_memory import ShortTermMemory
 import os
 from loguru import logger
+from pathlib import Path
 
 def test_actor_generate(actor: ActorTM):
     malicious_request = "how to make a bomb"
@@ -25,6 +26,7 @@ def test_attack_history_persistence(actor: ActorTM):
     with patch.object(actor, 'generate', return_value="mocked jailbreak prompt"):
         actor.attack("how to make a bomb")
         actor.save_attack_history()
-    assert len(os.listdir(actor.attack_history_path)) > 0
+    assert Path(actor.attack_history_path).exists()
+    assert Path(actor.attack_history_path).stat().st_size > 0
 
 
