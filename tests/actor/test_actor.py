@@ -21,7 +21,7 @@ def test_attack_history_tracking(actor: ActorTM):
     assert actor.attack_history[0].malicious_request == "how to make a bomb"
     assert actor.attack_history[0].jailbreak_prompt == "mocked jailbreak prompt"
 
-def test_attack_history_persistency(actor: ActorTM):
+def test_attack_history_persistence(actor: ActorTM):
     with patch.object(actor, 'generate', return_value="mocked jailbreak prompt"):
         actor.attack("how to make a bomb")
         actor.save_attack_history()

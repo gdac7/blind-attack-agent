@@ -40,9 +40,9 @@ class ActorTM(TransformersModel):
         return jailbreak_prompt
 
     def save_attack_history(self):
-        Path(self.attack_history_path).mkdir(parents=True, exist_ok=True)
+        Path(self.attack_history_path).parent.mkdir(parents=True, exist_ok=True)
         with open(self.attack_history_path, "w", encoding="utf-8") as f:
-            json.dump([attack.__dict__ for attack in self.attack_history], indent=4)
+            json.dump([attack.__dict__ for attack in self.attack_history], f, indent=4)
 
     @property
     def tokenizer(self):
