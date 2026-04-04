@@ -1,7 +1,7 @@
 from src.optimizers.fitness.base import FitnessFunction
 from src.optimizers.models.individual import Individual
 from src.optimizers.fitness.cross_entropy import CrossEntropyFitness
-
+from src.llms.actor import ActorTM
 import pytest
 import torch
 from unittest.mock import MagicMock
@@ -46,3 +46,8 @@ def mock_cross_entropy():
         model=mock_model,
         tokenizer=mock_tokenizer
     )
+
+@pytest.fixture(scope="module")
+def actor():
+    return ActorTM(model_name="google/gemma-4-E4B-it")
+
