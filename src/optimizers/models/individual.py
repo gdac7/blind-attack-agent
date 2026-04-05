@@ -5,7 +5,7 @@ MOCKS_FILE = "individual_mocks.txt"
 MOCKS_PATH = Path.cwd() / MOCKS_FILE
 
 @dataclass
-class Individual():
+class Individual:
     prompt: str
     fitness: float = 0.0
 
