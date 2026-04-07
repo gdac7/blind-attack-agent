@@ -6,13 +6,30 @@ from src.optimizers.models.individual import Individual
 import copy
 
 class PSOOptimizer(Optimizer):
+    DEFAULT_C1 = 1.496
+    DEFAULT_C2 = 1.496
+    DEFAULT_WMAX = 0.9
+    DEFAULT_WMIN = 0.4
+    DEFAULT_MAX_ITER = 20
+
     def __init__(
         self,
-        evaluator: FitnessFunction
+        evaluator: FitnessFunction,
+        max_iter: int = DEFAULT_MAX_ITER,
+        c1: float = DEFAULT_C1,
+        c2: float = DEFAULT_C2,
+        wmax: float = DEFAULT_WMAX,
+        wmin: float = DEFAULT_WMIN
     ):
         super().__init__('Particle Swarm Optimization')
 
         self.evaluator = evaluator
+        self.max_iter = max_iter
+
+        self.c1 = c1
+        self.c2 = c2
+        self.wmax = wmax
+        self.wmin = wmin
     
     def _init_swarm(self, initial_population: list[Individual]) -> list[Particle]:
         return [Particle.from_individual(individual) for individual in Individual]
@@ -29,6 +46,9 @@ class PSOOptimizer(Optimizer):
                 gbest = individual
             
         return gbest
+    
+    def _calc_inertia(self, iter: int) -> float:
+        return self.wmax - ((self.wmax - self.wmin) / self.max_iter) * iter
 
     def _evaluate_curr(self, particle: Particle) -> float:
         self.evaluator.evaluate(particle.curr_state)
