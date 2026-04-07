@@ -32,7 +32,7 @@ class PSOOptimizer(Optimizer):
         self.wmin = wmin
     
     def _init_swarm(self, initial_population: list[Individual]) -> list[Particle]:
-        return [Particle.from_individual(individual) for individual in Individual]
+        return [Particle.from_individual(individual) for individual in initial_population]
     
     def _find_gbest(self, swarm: list[Particle]) -> Individual:
         gbest = swarm[0].curr_state
