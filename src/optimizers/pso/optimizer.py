@@ -1,6 +1,7 @@
 from src.optimizers.base import Optimizer
 from src.optimizers.fitness.base import FitnessFunction
 from src.optimizers.models.particle import Particle
+from src.optimizers.models.individual import Individual
 
 import copy
 
@@ -12,6 +13,9 @@ class PSOOptimizer(Optimizer):
         super().__init__('Particle Swarm Optimization')
 
         self.evaluator = evaluator
+    
+    def _init_swarm(self, initial_population: list[Individual]) -> list[Particle]:
+        return [Particle.from_individual(individual) for individual in Individual]
 
     def _evaluate_curr(self, particle: Particle) -> float:
         self.evaluator.evaluate(particle.curr_state)
