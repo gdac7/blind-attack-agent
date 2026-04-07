@@ -16,6 +16,19 @@ class PSOOptimizer(Optimizer):
     
     def _init_swarm(self, initial_population: list[Individual]) -> list[Particle]:
         return [Particle.from_individual(individual) for individual in Individual]
+    
+    def _find_gbest(self, swarm: list[Particle]) -> Individual:
+        gbest = swarm[0].curr_state
+        self.evaluator.evaluate(gbest)
+
+        for particle in swarm:
+            individual = particle.curr_state
+            self.evaluator.evaluate(individual)
+
+            if individual.fitness > gbest.fitness:
+                gbest = individual
+            
+        return gbest
 
     def _evaluate_curr(self, particle: Particle) -> float:
         self.evaluator.evaluate(particle.curr_state)
