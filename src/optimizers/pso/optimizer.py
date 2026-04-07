@@ -2,8 +2,12 @@ from src.optimizers.base import Optimizer
 from src.optimizers.fitness.base import FitnessFunction
 from src.optimizers.models.particle import Particle
 from src.optimizers.models.individual import Individual
+from src.optimizers.utils.nlp_constants import TARGET_POS_TAGS
 
 import copy
+
+import spacy
+from loguru import logger
 
 class PSOOptimizer(Optimizer):
     DEFAULT_C1 = 1.496
@@ -22,6 +26,8 @@ class PSOOptimizer(Optimizer):
         wmin: float = DEFAULT_WMIN
     ):
         super().__init__('Particle Swarm Optimization')
+
+        self.nlp = spacy.load('en_core_web_sm')
 
         self.evaluator = evaluator
         self.max_iter = max_iter
@@ -46,6 +52,17 @@ class PSOOptimizer(Optimizer):
                 gbest = individual
             
         return gbest
+    
+    def _prompt_distance(self, curr_prompt: str, target_prompt: str) -> int:
+        curr_doc = self.nlp(curr_prompt)
+        target_doc = self.nlp(target_prompt)
+
+        curr_valid = set([token.lemma_ for token in curr_doc if token.pos_ in TARGET_POS_TAGS])
+        target_valid = set([token.lemma_ for token in target_doc if token.pos_ in TARGET_POS_TAGS])
+
+        sets_diff = curr_valid - target_valid
+
+        return len(sets_diff)
     
     def _calc_inertia(self, iter: int) -> float:
         return self.wmax - ((self.wmax - self.wmin) / self.max_iter) * iter
