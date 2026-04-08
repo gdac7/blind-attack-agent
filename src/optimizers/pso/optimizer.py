@@ -74,3 +74,6 @@ class PSOOptimizer(Optimizer):
             particle.particle_best = copy.deepcopy(particle.curr_state)
 
         return particle.curr_state.fitness
+    
+    def _run(self, initial_population: list[Individual]) -> Individual:
+        pass
