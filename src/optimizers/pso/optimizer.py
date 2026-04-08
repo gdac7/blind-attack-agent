@@ -76,4 +76,6 @@ class PSOOptimizer(Optimizer):
         return particle.curr_state.fitness
     
     def _run(self, initial_population: list[Individual]) -> Individual:
-        pass
+        swarm = self._init_swarm(initial_population)
+
+        gbest = self._find_gbest(swarm)
