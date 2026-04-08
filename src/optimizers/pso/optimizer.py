@@ -5,6 +5,7 @@ from src.optimizers.models.individual import Individual
 from src.optimizers.utils.nlp_constants import TARGET_POS_TAGS
 
 import copy
+import random
 
 import spacy
 from loguru import logger
@@ -66,6 +67,20 @@ class PSOOptimizer(Optimizer):
     
     def _calc_inertia(self, iter: int) -> float:
         return self.wmax - ((self.wmax - self.wmin) / self.max_iter) * iter
+    
+    def _calc_velocity(self, particle: Particle, gbest: Individual, iter: int) -> float:
+        w = self._calc_inertia(iter)
+        r1 = random.random()
+        r2 = random.random()
+
+        dist_pbest = self._prompt_distance(particle.curr_state.prompt, gbest.prompt)
+        dist_gbest = self._prompt_distance(particle.curr_state.prompt, particle.particle_best.prompt)
+
+        velocity = round((w * particle.velocity) + (self.c1 * r1 * dist_pbest) + (self.c2 * r2 * dist_gbest))
+
+        particle.velocity = velocity
+
+        return velocity
 
     def _evaluate_curr(self, particle: Particle) -> float:
         self.evaluator.evaluate(particle.curr_state)
