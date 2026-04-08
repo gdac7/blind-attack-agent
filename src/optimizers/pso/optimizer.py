@@ -60,7 +60,7 @@ class PSOOptimizer(Optimizer):
         curr_valid = set([token.lemma_ for token in curr_doc if token.pos_ in TARGET_POS_TAGS])
         target_valid = set([token.lemma_ for token in target_doc if token.pos_ in TARGET_POS_TAGS])
 
-        sets_diff = curr_valid - target_valid
+        sets_diff = target_valid - curr_valid
 
         return len(sets_diff)
     
