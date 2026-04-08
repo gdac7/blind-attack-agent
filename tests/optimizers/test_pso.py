@@ -12,5 +12,5 @@ def test_pso():
     for ind in initial_population:
         particle = Particle.from_individual(ind)
         logger.info(f'Current State: {particle.curr_state.prompt} \
-            | Best Solution: {particle.particle_best.prompt if particle.particle_best else 'None'} \
+            | Best Solution: {particle.pbest.prompt if particle.pbest else 'None'} \
             | Velocity: {particle.velocity}')

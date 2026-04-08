@@ -74,7 +74,7 @@ class PSOOptimizer(Optimizer):
         r2 = random.random()
 
         dist_pbest = self._prompt_distance(particle.curr_state.prompt, gbest.prompt)
-        dist_gbest = self._prompt_distance(particle.curr_state.prompt, particle.particle_best.prompt)
+        dist_gbest = self._prompt_distance(particle.curr_state.prompt, particle.pbest.prompt)
 
         velocity = round((w * particle.velocity) + (self.c1 * r1 * dist_pbest) + (self.c2 * r2 * dist_gbest))
 
@@ -85,8 +85,8 @@ class PSOOptimizer(Optimizer):
     def _evaluate_curr(self, particle: Particle) -> float:
         self.evaluator.evaluate(particle.curr_state)
 
-        if (not particle.particle_best) or (particle.curr_state.fitness > particle.particle_best.fitness):
-            particle.particle_best = copy.deepcopy(particle.curr_state)
+        if (not particle.pbest) or (particle.curr_state.fitness > particle.pbest.fitness):
+            particle.pbest = copy.deepcopy(particle.curr_state)
 
         return particle.curr_state.fitness
     

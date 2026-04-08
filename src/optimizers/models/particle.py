@@ -5,7 +5,7 @@ from dataclasses import dataclass
 @dataclass
 class Particle:
     curr_state: Individual
-    particle_best: Individual | None = None
+    pbest: Individual | None = None
     velocity: int = 1
 
     @classmethod
