@@ -1,0 +1,5 @@
+### Cuda 13.0 for testing  and run the code
+--index-url https://download.pytorch.org/whl/cu130;
+torch
+transformers
+
