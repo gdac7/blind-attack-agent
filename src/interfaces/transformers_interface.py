@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from src.prompts.prompt_template import PromptTemplate
 import torch
+from typing import final
 
 class TransformersModel(ABC):
     @property
@@ -12,7 +13,8 @@ class TransformersModel(ABC):
     @abstractmethod
     def model(self):
         pass
-
+    
+    @final
     def generate(self, prompt_template: PromptTemplate) -> str:
         generation_params = {
             "max_new_tokens": prompt_template.max_tokens,
