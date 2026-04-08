@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from src.prompts.prompt_template import PromptTemplate
 import torch
 from typing import final
@@ -18,15 +18,6 @@ class TransformersModel(ABC):
             attn_implementation="sdpa"
         )
         
-    @property
-    @abstractmethod
-    def tokenizer(self):
-        pass
-
-    @property
-    @abstractmethod
-    def model(self):
-        pass
     
     @final
     def generate(self, prompt_template: PromptTemplate) -> str:
