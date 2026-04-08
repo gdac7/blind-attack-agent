@@ -79,3 +79,9 @@ class PSOOptimizer(Optimizer):
         swarm = self._init_swarm(initial_population)
 
         gbest = self._find_gbest(swarm)
+
+        for particle in swarm:
+            curr_fitness = self._evaluate_curr(particle)
+
+            if curr_fitness > gbest.fitness:
+                gbest = particle.curr_state
