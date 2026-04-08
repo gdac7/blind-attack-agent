@@ -2,8 +2,22 @@ from abc import ABC, abstractmethod
 from src.prompts.prompt_template import PromptTemplate
 import torch
 from typing import final
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
 
 class TransformersModel(ABC):
+    def __init__(self, model_name: str):
+        self.model_name = model_name
+        self._tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="left")
+        if self._tokenizer.pad_token is None:
+            self._tokenizer.pad_token = self._tokenizer.eos_token
+        self._model = AutoModelForCausalLM.from_pretrained(
+            self.model_name,
+            device_map="cuda",
+            dtype=torch.bfloat16,
+            attn_implementation="sdpa"
+        )
+        
     @property
     @abstractmethod
     def tokenizer(self):
