@@ -5,6 +5,7 @@ from src.llms.actor import ActorTM
 import pytest
 import torch
 from unittest.mock import MagicMock
+from src.llms.evaluator import EvaluatorTM
 
 class EvaluatorMock(FitnessFunction):
     def evaluate(self, individual: Individual) -> float:
@@ -50,4 +51,8 @@ def mock_cross_entropy():
 @pytest.fixture(scope="module")
 def actor():
     return ActorTM(model_name="google/gemma-4-E4B-it")
+
+@pytest.fixture(scope="module")
+def reflexion_evaluator():
+    return EvaluatorTM(model_name="google/gemma-4-E4B-it")
 
