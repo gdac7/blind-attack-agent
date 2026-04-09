@@ -1,18 +1,25 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from src.prompts.prompt_template import PromptTemplate
 import torch
+from typing import final
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
 
 class TransformersModel(ABC):
-    @property
-    @abstractmethod
-    def tokenizer(self):
-        pass
-
-    @property
-    @abstractmethod
-    def model(self):
-        pass
-
+    def __init__(self, model_name: str):
+        self.model_name = model_name
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="left")
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self._tokenizer.eos_token
+        self.model = AutoModelForCausalLM.from_pretrained(
+            self.model_name,
+            device_map="cuda",
+            dtype=torch.bfloat16,
+            attn_implementation="sdpa"
+        )
+        
+    
+    @final
     def generate(self, prompt_template: PromptTemplate) -> str:
         generation_params = {
             "max_new_tokens": prompt_template.max_tokens,
@@ -62,12 +69,12 @@ class TransformersModel(ABC):
             output_ids = self.model.generate(**inputs, **generation_params)
             generated_tokens = output_ids[0][input_length:]
             lm_response = self._wrapper_response(
-                self.tokenizer.decode(generated_tokens, skip_special_tokens=True).strip()
+                self.tokenizer.decode(generated_tokens, skip_special_tokens=True).strip(),
+                prompt_template.end_tag,
             )
             return lm_response
 
-    def _wrapper_response(self, lm_response: str) -> str:
-        tag = "[END OF THE NEW PROMPT]"
-        if tag in lm_response:
-            return lm_response.split(tag)[0]
+    def _wrapper_response(self, lm_response: str, end_tag: str) -> str:
+        if end_tag in lm_response:
+            return lm_response.split(end_tag)[0]
         return lm_response

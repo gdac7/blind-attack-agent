@@ -7,6 +7,7 @@ class PromptTemplate:
     condition: str
     temperature: float 
     max_tokens: int
+    end_tag: str
 
 
 
