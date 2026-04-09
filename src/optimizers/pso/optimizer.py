@@ -81,6 +81,12 @@ class PSOOptimizer(Optimizer):
         particle.velocity = velocity
 
         return velocity
+    
+    def _update_gbest(self, particle: Particle, curr_gbest: Individual) -> Individual:
+        if particle.curr_state.fitness > curr_gbest.fitness:
+            return copy.deepcopy(particle.curr_state)
+        
+        return curr_gbest
 
     def _run(self, initial_population: list[Individual]) -> Individual:
         swarm = self._init_swarm(initial_population)
@@ -91,5 +97,6 @@ class PSOOptimizer(Optimizer):
                 self._evaluate_curr(particle)
 
                 particle.update_pbest()
+                gbest = self._update_gbest(particle, gbest)
 
         pass
