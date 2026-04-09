@@ -82,14 +82,6 @@ class PSOOptimizer(Optimizer):
 
         return velocity
 
-    def _evaluate_curr(self, particle: Particle) -> float:
-        self.evaluator.evaluate(particle.curr_state)
-
-        if (not particle.pbest) or (particle.curr_state.fitness > particle.pbest.fitness):
-            particle.pbest = copy.deepcopy(particle.curr_state)
-
-        return particle.curr_state.fitness      
-
     def _run(self, initial_population: list[Individual]) -> Individual:
         swarm = self._init_swarm(initial_population)
         gbest = self._find_gbest(swarm)
@@ -97,5 +89,7 @@ class PSOOptimizer(Optimizer):
         for iter in range(self.max_iter):
             for particle in swarm:
                 self._evaluate_curr(particle)
+
+                particle.update_pbest()
 
         pass
