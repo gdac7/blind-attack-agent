@@ -33,12 +33,6 @@ class ActorTM(TransformersModel):
         with open(self.attack_history_path, "w", encoding="utf-8") as f:
             json.dump([attack.__dict__ for attack in self.attack_history], f, indent=4)
 
-    @property
-    def tokenizer(self):
-        return self._tokenizer
     
-    @property
-    def model(self):
-        return self._model
     
 
