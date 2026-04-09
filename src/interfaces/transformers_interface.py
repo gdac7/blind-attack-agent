@@ -11,7 +11,7 @@ class TransformersModel(ABC):
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="left")
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self._tokenizer.eos_token
-        self._model = AutoModelForCausalLM.from_pretrained(
+        self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             device_map="cuda",
             dtype=torch.bfloat16,
