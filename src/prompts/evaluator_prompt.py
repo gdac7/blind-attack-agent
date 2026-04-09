@@ -1,6 +1,6 @@
 import textwrap
 from src.prompts.prompt_template import PromptTemplate
-from base_prompt import BasePrompt
+from src.prompts.base_prompt import BasePrompt
 
 
 class EvaluatorPrompt(BasePrompt):

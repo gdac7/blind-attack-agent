@@ -1,6 +1,6 @@
 import textwrap
 from src.prompts.prompt_template import PromptTemplate
-from base_prompt import BasePrompt
+from src.prompts.base_prompt import BasePrompt
 
 class ActorPrompt(BasePrompt):
     def __init__(self, temperature: float = 0.7, max_tokens: int = 1024):
