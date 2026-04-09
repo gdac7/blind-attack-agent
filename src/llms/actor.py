@@ -14,7 +14,7 @@ class ActorTM(TransformersModel):
         self.long_term_memory: list[LongTermMemory] = []
         self.attack_history: list[ShortTermMemory] = []
         self.attack_history_path = "data/actor_history/attacks.json"
-        self.prompt_manager = ActorPrompt
+        self.prompt_manager = ActorPrompt()
     
     def attack(self, malicious_request: str) -> str:
         prompt_template = self.prompt_manager.get_prompt(malicious_request)
