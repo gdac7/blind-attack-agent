@@ -3,12 +3,12 @@ from src.optimizers.fitness.base import FitnessFunction
 from src.optimizers.models.particle import Particle
 from src.optimizers.models.individual import Individual
 from src.optimizers.utils.nlp_constants import TARGET_POS_TAGS
+import src.optimizers.nlp.preprocessing as prep
 
 import copy
 import random
 
 import spacy
-from loguru import logger
 
 class PSOOptimizer(Optimizer):
     DEFAULT_C1 = 1.496
@@ -87,6 +87,54 @@ class PSOOptimizer(Optimizer):
             return copy.deepcopy(particle.curr_state)
         
         return curr_gbest
+    
+    def _move_towards_target(self, curr_prompt: str, target_prompt: str, budget: int = 1):
+        if budget < 1:
+            return curr_prompt
+
+        curr_doc = self.nlp(curr_prompt)
+        target_doc = self.nlp(target_prompt)
+
+        curr_core_tokens = prep.valid_tokens(curr_doc)
+        target_core_tokens = prep.valid_tokens(target_doc)
+
+        curr_lemma_map = prep.tokens_by_lemma(curr_core_tokens)
+        target_lemma_map = prep.tokens_by_lemma(target_core_tokens)
+
+        missing_lemmas = list(set(target_lemma_map.keys()) - set(curr_lemma_map.keys()))
+
+        if not missing_lemmas:
+            return curr_prompt
+
+        curr_prompt_tokens = [token.text_with_ws for token in curr_doc]
+
+        random.shuffle(missing_lemmas)
+
+        used_budget = 0
+        for lemma, pos in missing_lemmas:
+            if used_budget >= budget:
+                break
+
+            candidates_idx = [i for i, token in enumerate(curr_doc) if token.pos_ == pos]
+
+            if not candidates_idx:
+                continue
+
+            victim_idx = random.choice(candidates_idx)
+            victim_punc = curr_doc[victim_idx].whitespace_
+
+            target_word = random.choice(target_lemma_map[(lemma, pos)])
+            
+            new_word = target_word + victim_punc
+
+            curr_prompt_tokens[victim_idx] = new_word
+
+            used_budget += 1
+
+        return "".join(curr_prompt_tokens)
+
+    def _fly_particle(self, particle: Particle, gbest: Individual, iter: int) -> None:
+        velocity = self._calc_velocity(particle, gbest, iter)
 
     def _run(self, initial_population: list[Individual]) -> Individual:
         swarm = self._init_swarm(initial_population)
