@@ -2,13 +2,15 @@ from src.optimizers.base import Optimizer
 from src.optimizers.fitness.base import FitnessFunction
 from src.optimizers.models.particle import Particle
 from src.optimizers.models.individual import Individual
-from src.optimizers.utils.nlp_constants import TARGET_POS_TAGS
+from src.optimizers.utils.nlp_constants import TARGET_POS_TAGS, POS_TRANSLATION
+from src.optimizers.utils.validate_synonym import validate_synonym
 import src.optimizers.nlp.preprocessing as prep
 
 import copy
 import random
 
 import spacy
+from nltk.wsd import lesk
 
 class PSOOptimizer(Optimizer):
     DEFAULT_C1 = 1.496
@@ -132,6 +134,55 @@ class PSOOptimizer(Optimizer):
             used_budget += 1
 
         return "".join(curr_prompt_tokens)
+    
+    def _inertial_move(self, prompt: str, budget: int) -> str:
+        if budget < 1:
+            return prompt
+        
+        prompt_doc = self.nlp(prompt)
+        prompt_tokens = [token.text_with_ws for token in prompt_doc]
+
+        candidates_idx = [i for i, token in enumerate(prompt_doc) if token.pos_ in TARGET_POS_TAGS]
+
+        random.shuffle(candidates_idx)
+
+        used_budget = 0
+        for candidate_idx in candidates_idx:
+            if used_budget >= budget:
+                break
+
+            token = prompt_doc[candidate_idx]
+            token_pos = POS_TRANSLATION[token.pos_]
+
+            synset = lesk(
+                context_sentence=prompt, 
+                ambiguous_word=token.lemma_, 
+                pos=token_pos
+            )
+
+            if not synset:
+                continue
+
+            valid_synonyms = [synonym for synonym in synset.lemma_names() if validate_synonym(token.text, synonym)]
+
+            if not valid_synonyms:
+                continue
+
+            chosen_synonym = random.choice(valid_synonyms)
+            chosen_synonym = chosen_synonym.replace("_", " ")
+
+            if token.text[0].isupper():
+                chosen_synonym = chosen_synonym.capitalize()
+            
+            token_punc = token.whitespace_
+
+            new_word = chosen_synonym + token_punc
+
+            prompt_tokens[candidate_idx] = new_word
+
+            used_budget += 1
+
+        return "".join(prompt_tokens)
 
     def _fly_particle(self, particle: Particle, gbest: Individual, iter: int) -> None:
         velocity = self._calc_velocity(particle, gbest, iter)
