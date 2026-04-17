@@ -19,6 +19,9 @@ class PSOOptimizer(Optimizer):
     DEFAULT_WMIN = 0.4
     DEFAULT_MAX_ITER = 20
 
+    MIN_INERTIA_BUDGET = 1
+    MIN_PBEST_BUDGET = 1
+
     def __init__(
         self,
         evaluator: FitnessFunction,
@@ -70,19 +73,48 @@ class PSOOptimizer(Optimizer):
     def _calc_inertia(self, iter: int) -> float:
         return self.wmax - ((self.wmax - self.wmin) / self.max_iter) * iter
     
-    def _calc_velocity(self, particle: Particle, gbest: Individual, iter: int) -> float:
+    def _v_max(self, prompt: str) -> int:
+        prompt_doc = self.nlp(prompt)
+
+        return round((1/3) * len(prompt_doc))
+    
+    def _calc_velocity(self, particle: Particle, gbest: str, iter: int) -> tuple[int, int, int]:
         w = self._calc_inertia(iter)
         r1 = random.random()
         r2 = random.random()
 
-        dist_pbest = self._prompt_distance(particle.curr_state.prompt, gbest.prompt)
-        dist_gbest = self._prompt_distance(particle.curr_state.prompt, particle.pbest.prompt)
+        dist_gbest = self._prompt_distance(particle.curr_state.prompt, gbest)
+        dist_pbest = self._prompt_distance(particle.curr_state.prompt, particle.pbest.prompt)
 
-        velocity = round((w * particle.velocity) + (self.c1 * r1 * dist_pbest) + (self.c2 * r2 * dist_gbest))
+        inertia_budget = round(w * particle.velocity)
+        pbest_budget = round(self.c1 * r1 * dist_pbest)
+        gbest_budget = round(self.c2 * r2 * dist_gbest)
+
+        velocity = inertia_budget + pbest_budget + gbest_budget
+        max_velocity = self._v_max(particle.curr_state.prompt)
+
+        if velocity > max_velocity:
+            excess = velocity - max_velocity
+
+            inertia_margin = max(0, inertia_budget - self.MIN_INERTIA_BUDGET)
+            inertia_reduction = min(inertia_margin, excess)
+
+            inertia_budget -= inertia_reduction
+            excess -= inertia_reduction
+
+            pbest_margin = max(0, pbest_budget - self.MIN_PBEST_BUDGET)
+            pbest_reduction = min(pbest_margin, excess)
+
+            pbest_budget -= pbest_reduction
+            excess -= pbest_reduction
+
+            gbest_budget -= excess
+
+            velocity = max_velocity
 
         particle.velocity = velocity
 
-        return velocity
+        return inertia_budget, pbest_budget, gbest_budget
     
     def _update_gbest(self, particle: Particle, curr_gbest: Individual) -> Individual:
         if particle.curr_state.fitness > curr_gbest.fitness:
@@ -184,7 +216,7 @@ class PSOOptimizer(Optimizer):
 
         return "".join(prompt_tokens)
 
-    def _fly_particle(self, particle: Particle, gbest: Individual, iter: int) -> None:
+    def _fly_particle(self, particle: Particle, gbest: str, iter: int) -> None:
         velocity = self._calc_velocity(particle, gbest, iter)
 
     def _run(self, initial_population: list[Individual]) -> Individual:
