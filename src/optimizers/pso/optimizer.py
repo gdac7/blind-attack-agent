@@ -216,8 +216,15 @@ class PSOOptimizer(Optimizer):
 
         return "".join(prompt_tokens)
 
-    def _fly_particle(self, particle: Particle, gbest: str, iter: int) -> None:
-        velocity = self._calc_velocity(particle, gbest, iter)
+    def _fly_particle(self, particle: Particle, gbest: str, iter: int) -> str:
+        inertia_budget, pbest_budget, gbest_budget \
+            = self._calc_velocity(particle, gbest, iter)
+
+        candidate_prompt = self._inertial_move(particle.curr_state.prompt, inertia_budget)
+        candidate_prompt = self._move_towards_target(candidate_prompt, particle.pbest.prompt, pbest_budget)
+        candidate_prompt = self._move_towards_target(candidate_prompt, gbest, gbest_budget)
+
+        return candidate_prompt
 
     def _run(self, initial_population: list[Individual]) -> Individual:
         swarm = self._init_swarm(initial_population)
